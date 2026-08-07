@@ -1,0 +1,13 @@
+{
+  "name": "ios-workflow",
+  "owner": {
+    "name": "ios-workflow"
+  },
+  "plugins": [
+    {
+      "name": "ios-subagents",
+      "source": "./plugins/ios-subagents",
+      "description": "iOS App 開發 Sub Agent 團隊:需求釐清 → 協調者 → 架構師 → 開發者 → 品管,涵蓋 BDD/DDD/TDD 完整循環"
+    }
+  ]
+}

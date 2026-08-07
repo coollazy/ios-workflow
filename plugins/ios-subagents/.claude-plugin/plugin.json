@@ -1,0 +1,8 @@
+{
+  "name": "ios-subagents",
+  "version": "1.0.0",
+  "description": "iOS App 開發 Sub Agent 團隊:requirements-agent → orchestrator → architecture-agent → ios-dev-agent → ios-qa-agent,涵蓋需求釐清(BDD)→ 架構設計(DDD)→ 開發(TDD)→ 獨立驗收的完整循環",
+  "author": {
+    "name": "ios-workflow"
+  }
+}
