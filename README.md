@@ -7,7 +7,7 @@ Claude Code plugin marketplace,提供一組 iOS App 開發用的 sub agent 團�
 在任何專案的 Claude Code session 裡執行:
 
 ```
-/plugin marketplace add <這個 repo 的路徑或網址>
+/plugin marketplace add https://github.com/coollazy/ios-workflow.git
 /plugin install ios-subagents@ios-workflow
 ```
 
@@ -18,13 +18,3 @@ Claude Code plugin marketplace,提供一組 iOS App 開發用的 sub agent 團�
 1. 有新功能想法或 bug 回報時,直接跟 `requirements-agent` 對話,持續問答到需求收斂,產出 BDD 規格文件
 2. 規格確認「已確認待開發」後,交給 `orchestrator`,它會依序調度 `architecture-agent` → `ios-dev-agent` → `ios-qa-agent` 完成開發與驗收
 3. 詳細規則(交接條件、重試上限、目錄慣例等)見各 agent 檔案本身(`plugins/ios-subagents/agents/*.md`)與 `CLAUDE.md`
-
-## 目錄結構
-
-```
-.claude-plugin/marketplace.json      marketplace 清單
-plugins/ios-subagents/
-  .claude-plugin/plugin.json         plugin metadata
-  agents/                            五個 sub agent 定義(正本)
-.claude/agents/                      symlink 回 plugins/ios-subagents/agents/,方便在這個 repo 本身直接測試
-```
