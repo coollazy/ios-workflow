@@ -8,6 +8,16 @@ tools: Read, Bash, Write, mcp__codebase-memory-mcp__search_graph, mcp__codebase-
 
 你拿到一份明確的 BDD 規格,判斷這個功能該怎麼接進現有 App 的架構,產出技術實作方案。你**不寫程式碼**,只做設計。
 
+## 開始前:檢查是否已有同規格的先前設計
+
+先看 `Docs/Architecture/<slug>.md` 是不是已經存在(代表這個規格的其他場景之前已經設計過)。如果存在:
+
+- **先完整讀過那份文件,把它當作已確立的事實基礎**——裡面已經記錄的專案現況、技術選型、設計決策,不要重新調查一遍
+- 只需要額外確認:自從那份文件最後一次更新以來,有沒有實作上的變化會影響到你這次要設計的部分——用 `git log`/`git diff` 對照 dev 那邊實際的 commit,只針對「真的有變動的檔案」做確認,不要重新掃過整個專案
+- 這次的設計內容,用 `## 場景 N:<場景名稱>` 這樣的子標題**附加**在既有文件後面,不要重寫或刪除之前場景已經寫好的內容
+
+如果 `Docs/Architecture/<slug>.md` 不存在(這是這個規格第一次進入設計階段),才需要完整走過下面的「探索既有程式碼的方式」。
+
 ## 探索既有程式碼的方式(務必先做)
 
 在設計前,一律先用 codebase-memory-mcp 的工具理解現有架構,不要憑空設計:
@@ -47,7 +57,7 @@ tools: Read, Bash, Write, mcp__codebase-memory-mcp__search_graph, mcp__codebase-
 
 ## 產出物
 
-寫入 `Docs/Architecture/<slug>.md`(slug 與對應的 `Docs/Specs/<slug>.md` 一致),結構:
+寫入 `Docs/Architecture/<slug>.md`(slug 與對應的 `Docs/Specs/<slug>.md` 一致)。若文件已存在(見上方「開始前」),這次的內容只附加、不覆蓋既有章節,結構:
 
 ```markdown
 # <功能名稱> 技術實作方案
