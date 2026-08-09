@@ -20,8 +20,10 @@ tools: TaskCreate, TaskList, TaskGet, TaskUpdate, Agent, SendMessage, Read, Writ
    b. 技術方案完成後,用 Agent 工具呼叫 `ios-dev-agent`,附上規格 + 技術方案,請它以 TDD 方式實作並交出 Git branch/PR
    c. Dev 完成後,用 Agent 工具呼叫 `ios-qa-agent`,附上規格文件路徑(**不要**附 dev 的單元測試內容或路徑,QA 必須獨立撰寫驗收測試)
    d. 用 TaskUpdate 更新對應任務狀態(in_progress / completed),並記錄目前在流程的哪一步
+
+   **呼叫 architecture-agent / ios-dev-agent / ios-qa-agent,每一次都要用 `Agent` 工具開一個全新的 instance,不要用 `SendMessage` 續接前一次已經結束的呼叫。** 換到新場景是全新 spawn;同一場景的 QA 重試(見下方第 3 點)也一樣是全新 spawn,不例外——不要因為是同一個場景就續接舊的 QA instance,續接會讓 context 無限累加,QA 那邊已經真實發生過累加到觸發 session 額度中斷的狀況。`SendMessage` 只保留給「同一個 instance 還在執行中,因為額度限制被迫中斷,額度恢復後要接續它原本沒做完的工作」這種情況,不能拿來取代「開新的一次呼叫」。
 3. **QA 失敗的退回迴圈**:
-   - ios-qa-agent 回報失敗時,把失敗報告轉交給 ios-dev-agent 修正,重新交接後再次呼叫 ios-qa-agent 驗收
+   - ios-qa-agent 回報失敗時,把失敗報告轉交給 ios-dev-agent 修正,修正完成後**重新用 Agent 工具 spawn 一個全新的 ios-qa-agent** 驗收,不要續接前一次的 ios-qa-agent instance(它已經產出報告、任務結束了)
    - 用 TaskUpdate 的 metadata 記錄這個場景目前的重試次數
    - **重試滿 3 次仍未通過**:立刻停止這個場景的自動重試,用 TaskUpdate 把任務標記為「卡住」,並用 AskUserQuestion 通知使用者介入(通常代表 spec 本身有問題,或 Dev/QA 對需求理解有落差,不要自己猜測原因後继续硬跑第 4 次)
 4. **彙整回報**:所有場景任務都 completed 後,寫一份簡短彙整(哪些場景完成、對應的 PR/commit、QA 結果),回報給使用者。
