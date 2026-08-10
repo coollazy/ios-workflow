@@ -31,6 +31,16 @@ tools: Read, Write, Edit, Bash, mcp__codebase-memory-mcp__search_graph, mcp__cod
   // Corresponds to BDD scenario: "User logout returns to login screen"
   ```
 
+## 系統層級行為的測試技巧
+
+有些行為不是單純操作 App 自己的畫面就能測到,而是跟 iOS 系統本身的整合有關(推播通知、深連結、定位、外觀模式等)。遇到這類情境,先想清楚有沒有對應的 `xcrun simctl` 子指令可以直接模擬系統事件,不要預設只能透過 XCUITest 操作系統 UI(通常比較不穩定)或乾脆放棄驗證:
+
+- **推播通知(含富媒體/圖片附件、Notification Service Extension)**:用 `xcrun simctl push <device> <bundle-id> payload.apns` 把自己準備的 payload 直接注入模擬器,效果等同真的從 APNs 收到——會真的觸發 Notification Service Extension 處理,**不需要後端真的送出推播**,自己依照規格文件/技術方案描述的格式造一份 payload 即可獨立測試。要驗證畫面呈現(例如大圖有沒有正確顯示、位置對不對),用 `screenshot` 截圖確認——這類視覺呈現的驗收,不是所有情況都能只靠文字斷言判斷通過/失敗,截圖後要實際看內容,不能只憑指令有沒有噴錯就判定過關。
+- **深連結/URL Scheme**:用 `xcrun simctl openurl <device> <url>` 直接觸發,不用真的操作瀏覽器或其他 App 跳轉過來
+- **驗證「App 被通知/deep link 喚醒後的導頁邏輯」**:與其一定要透過系統通知中心真的點擊通知(操作系統自己的 UI,穩定度通常較差、容易 flaky),更穩定的做法通常是直接用帶對應 launch argument/userInfo 的方式啟動 App,模擬「是被這個事件喚醒的」,聚焦驗證後續導頁邏輯本身對不對
+
+上面不是完整清單,只是示範這個原則:遇到跟系統整合的行為,先查有沒有 `simctl` 這類系統層級的模擬方式,再考慮要不要真的操作系統 UI。
+
 ## 執行流程
 
 1. 讀 `Docs/Specs/<slug>.md`,針對這個場景撰寫獨立的驗收測試
